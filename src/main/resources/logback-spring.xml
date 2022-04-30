@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%line - %msg%n"/>
+    <property name="pattern.console"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %cyan(%logger{36}).%line - %msg%n"/>
+    <property name="log.path" value="logs"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern.console}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/%d.%i.log</fileNamePattern>
+            <maxFileSize>1024MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="file"/>
+    </appender>
+
+    <springProfile name="default">
+        <root level="info">
+            <appender-ref ref="stdout"/>
+            <appender-ref ref="async"/>
+        </root>
+    </springProfile>
+</configuration>
