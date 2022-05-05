@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SmzdmItemRepository extends MongoRepository<SmzdmItemDO, String> {
 
-    boolean existsByPageId(Long pageId);
+    SmzdmItemDO findByPageId(Long pageId);
 
 }

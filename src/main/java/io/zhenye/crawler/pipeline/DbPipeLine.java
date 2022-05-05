@@ -30,7 +30,14 @@ public class DbPipeLine implements Pipeline {
         SmzdmParseDTO dto = resultItems.get("dto");
         LocalDateTime now = LocalDateTime.now();
 
-        if (smzdmItemRepository.existsByPageId(dto.getPageId())) {
+        SmzdmItemDO itemDO = smzdmItemRepository.findByPageId(dto.getPageId());
+        if (itemDO == null) {
+            SmzdmItemDO item = new SmzdmItemDO();
+            BeanUtils.copyProperties(dto, item);
+            item.setCreateTime(now);
+            item.setUpdateTime(now);
+            smzdmItemRepository.save(item);
+        } else if (isEffective(itemDO)) {
             Query query = new Query().addCriteria(Criteria.where("pageId").is(dto.getPageId()));
             Update update = new Update()
                     .set("worthy", dto.getWorthy())
@@ -39,11 +46,11 @@ public class DbPipeLine implements Pipeline {
                     .set("updateTime", now);
             mongoTemplate.updateFirst(query, update, SmzdmItemDO.class);
         } else {
-            SmzdmItemDO item = new SmzdmItemDO();
-            BeanUtils.copyProperties(dto, item);
-            item.setCreateTime(now);
-            item.setUpdateTime(now);
-            smzdmItemRepository.save(item);
+            log.info("PageId[{}] is noneffective. Skip it.", itemDO.getPageId());
         }
+    }
+
+    private boolean isEffective(SmzdmItemDO itemDO) {
+        return itemDO.getCreateTime().isAfter(LocalDateTime.now().minusDays(1));
     }
 }
