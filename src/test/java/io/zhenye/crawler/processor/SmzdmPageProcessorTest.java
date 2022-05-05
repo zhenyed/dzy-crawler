@@ -1,21 +1,36 @@
 package io.zhenye.crawler.processor;
 
-import org.junit.jupiter.api.Assertions;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import cn.hutool.core.collection.CollUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Spider;
 
+import java.util.Set;
+
+@Slf4j
 class SmzdmPageProcessorTest {
 
+    @BeforeAll
+    static void beforeAll() {
+        // 设置日志输出级别
+        Set<String> loggers = CollUtil.newHashSet("org.apache.http");
+        for (String log : loggers) {
+            Logger logger = (Logger) LoggerFactory.getLogger(log);
+            logger.setLevel(Level.INFO);
+            logger.setAdditive(false);
+        }
+    }
+
     @Test
-    void main() {
+    void testLocal() {
         Spider.create(new SmzdmPageProcessor())
+                .test("https://www.smzdm.com/p/52475470/");
 //                .addUrl("https://faxian.smzdm.com/h3s183t0f0c1p1")
-                .addUrl("https://www.smzdm.com/p/52369400/")
-                .addPipeline((resultItems, task) -> {
-                    Assertions.assertEquals(52369400, Integer.parseInt(resultItems.get("id")));
-                    Assertions.assertEquals("https://item.jd.com/10044783662893.html", resultItems.get("解析后地址"));
-                })
-                .run();
+//                .addUrl("https://search.smzdm.com/?c=home&s=%E8%82%AF%E5%BE%B7%E5%9F%BA&v=b")
     }
 
 }

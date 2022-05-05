@@ -17,8 +17,9 @@ public class JsUtils {
     public static String eval(String script) {
         try {
             return (String) JS_ENGINE.eval(script);
-        } catch (ScriptException ignored) {
+        } catch (ScriptException e) {
+            log.error("Eval javaScript error.", e);
+            return null;
         }
-        return null;
     }
 }
