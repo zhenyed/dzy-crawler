@@ -1,16 +1,15 @@
-package io.zhenye.crawler.domain.data;
+package io.zhenye.crawler.domain.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 
 @Data
-@Document(collection = "smzdm_item")
-public class SmzdmItemDO extends BaseDO {
+public class SmzdmItemVO {
     /**
-     * 页面 id
+     * 什么值得买 id
      */
-    @Indexed
     private Long pageId;
     /**
      * 源地址
@@ -48,4 +47,15 @@ public class SmzdmItemDO extends BaseDO {
      * 值比例
      */
     private Integer worthyPercent;
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private LocalDateTime createTime;
+    /**
+     * 更新时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private LocalDateTime updateTime;
+
 }
