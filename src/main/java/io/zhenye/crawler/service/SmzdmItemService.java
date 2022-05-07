@@ -35,7 +35,7 @@ public class SmzdmItemService {
                     .skip((long) (dto.getPage() - 1) * dto.getPerPage());
             return new PageImpl<>(mongoTemplate.find(query, SmzdmItemDO.class));
         }
-        PageRequest pageRequest = PageRequest.of(dto.getPage(), dto.getPerPage(), Sort.Direction.DESC, "createTime");
+        PageRequest pageRequest = PageRequest.of(dto.getPage() - 1, dto.getPerPage(), Sort.Direction.DESC, "createTime");
         return smzdmItemRepository.findAll(pageRequest);
     }
 
@@ -46,7 +46,7 @@ public class SmzdmItemService {
     public List<SmzdmItemDO> listRanking() {
         Query query = Query
                 .query(new Criteria()
-                        .and("createTime").gte(LocalDateTime.now().minusDays(3))
+                        .and("createTime").gte(LocalDateTime.now().minusDays(1))
                         .and("worthyPercent").gte(70)
                         .and("worthy").gte(20)
                 ).with(Sort.by(Sort.Direction.DESC, "worthy", "worthyPercent"))
