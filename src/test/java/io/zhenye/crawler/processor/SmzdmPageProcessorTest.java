@@ -5,6 +5,7 @@ import ch.qos.logback.classic.Logger;
 import cn.hutool.core.collection.CollUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Spider;
@@ -25,6 +26,7 @@ class SmzdmPageProcessorTest {
         }
     }
 
+    @Disabled
     @Test
     void testLocal() {
         Spider.create(new SmzdmPageProcessor())

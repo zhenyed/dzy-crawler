@@ -48,4 +48,17 @@ public class AdminController {
         return AdminVO.success(res);
     }
 
+    @GetMapping("/smzdm-item/ranking")
+    public AdminVO<ListVO<SmzdmItemVO>> ranking() {
+        List<SmzdmItemDO> page = smzdmItemService.listRanking();
+        List<SmzdmItemVO> resp = page.stream()
+                .map(i -> {
+                    SmzdmItemVO res = new SmzdmItemVO();
+                    BeanUtils.copyProperties(i, res);
+                    return res;
+                })
+                .collect(Collectors.toList());
+        return AdminVO.success(new ListVO<SmzdmItemVO>().setRows(resp));
+    }
+
 }

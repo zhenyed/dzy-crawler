@@ -23,6 +23,8 @@ public class CrawlerSchedule {
         log.info("[Schedule] smzdmRankingListSchedule start");
         Spider.create(new SmzdmPageProcessor())
                 .addUrl("https://faxian.smzdm.com/h3s0t0f0c0p1/")
+                .addUrl("https://faxian.smzdm.com/h3s183t0f0c1p1")
+                .addUrl("https://search.smzdm.com/?c=home&s=%E8%82%AF%E5%BE%B7%E5%9F%BA&v=b")
                 .addPipeline(dbPipeLine)
                 .thread(4)
                 .run();
