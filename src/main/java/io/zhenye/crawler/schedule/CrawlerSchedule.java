@@ -1,6 +1,7 @@
 package io.zhenye.crawler.schedule;
 
 import io.zhenye.crawler.pipeline.DbPipeLine;
+import io.zhenye.crawler.pipeline.RankingPipeLine;
 import io.zhenye.crawler.processor.SmzdmPageProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import us.codecraft.webmagic.Spider;
 public class CrawlerSchedule {
 
     private final DbPipeLine dbPipeLine;
+    private final RankingPipeLine rankingPipeLine;
 
     /**
      * 【每小时】12h排行榜
@@ -26,6 +28,7 @@ public class CrawlerSchedule {
                 .addUrl("https://faxian.smzdm.com/h3s183t0f0c1p1")
                 .addUrl("https://search.smzdm.com/?c=home&s=%E8%82%AF%E5%BE%B7%E5%9F%BA&v=b")
                 .addPipeline(dbPipeLine)
+                .addPipeline(rankingPipeLine)
                 .thread(4)
                 .run();
         log.info("[Schedule] smzdmRankingListSchedule end");

@@ -1,10 +1,16 @@
 package io.zhenye.crawler.domain.data;
 
+import io.zhenye.crawler.domain.dto.SmzdmParseDTO;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Data
+@NoArgsConstructor
 @Document(collection = "smzdm_item")
 public class SmzdmItemDO extends BaseDO {
     /**
@@ -48,4 +54,12 @@ public class SmzdmItemDO extends BaseDO {
      * 值比例
      */
     private Integer worthyPercent;
+
+    public SmzdmItemDO(SmzdmParseDTO dto) {
+        LocalDateTime now = LocalDateTime.now();
+        SmzdmItemDO item = new SmzdmItemDO();
+        BeanUtils.copyProperties(dto, item);
+        item.setCreateTime(now);
+        item.setUpdateTime(now);
+    }
 }

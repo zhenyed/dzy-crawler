@@ -5,7 +5,6 @@ import io.zhenye.crawler.domain.dto.SmzdmParseDTO;
 import io.zhenye.crawler.domain.data.SmzdmItemDO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -32,11 +31,7 @@ public class DbPipeLine implements Pipeline {
 
         SmzdmItemDO itemDO = smzdmItemRepository.findByPageId(dto.getPageId());
         if (itemDO == null) {
-            SmzdmItemDO item = new SmzdmItemDO();
-            BeanUtils.copyProperties(dto, item);
-            item.setCreateTime(now);
-            item.setUpdateTime(now);
-            smzdmItemRepository.save(item);
+            smzdmItemRepository.save(new SmzdmItemDO(dto));
         } else if (isEffective(itemDO)) {
             Query query = new Query().addCriteria(Criteria.where("pageId").is(dto.getPageId()));
             Update update = new Update()

@@ -1,8 +1,12 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/test
+      uri: ${MONGO_URI:mongodb://127.0.0.1:27017/test}
 
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+smzdm:
+  ranking:
+    size: 50
