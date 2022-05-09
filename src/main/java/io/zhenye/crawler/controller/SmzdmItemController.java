@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/admin")
-public class AdminController {
+@RequestMapping("/admin/smzdm-item")
+public class SmzdmItemController {
 
     private final SmzdmItemService smzdmItemService;
 
-    @GetMapping("/smzdm-item")
+    @GetMapping("/")
     public AdminVO<ListVO<SmzdmItemVO>> list(@Valid SmzdmQueryDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.list(dto);
         List<SmzdmItemVO> resp = page.stream()
@@ -44,7 +44,7 @@ public class AdminController {
                         .setRows(resp));
     }
 
-    @GetMapping("/smzdm-item/{pageId}")
+    @GetMapping("/{pageId}")
     public AdminVO<SmzdmItemVO> get(@PathVariable("pageId") Long pageId) {
         SmzdmItemDO itemDO = smzdmItemService.get(pageId);
         SmzdmItemVO res = new SmzdmItemVO();
@@ -52,7 +52,7 @@ public class AdminController {
         return AdminVO.success(res);
     }
 
-    @GetMapping("/smzdm-item/ranking")
+    @GetMapping("/ranking")
     public AdminVO<ListVO<SmzdmItemVO>> ranking(@Valid PageDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.listRanking(dto);
         List<SmzdmItemVO> resp = page.stream()

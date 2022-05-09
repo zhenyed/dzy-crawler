@@ -2,6 +2,10 @@ spring:
   data:
     mongodb:
       uri: ${MONGO_URI:mongodb://127.0.0.1:27017/test}
+  redis:
+    host: ${REDIS_IP:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PWD:}
 
 logging:
   level:
