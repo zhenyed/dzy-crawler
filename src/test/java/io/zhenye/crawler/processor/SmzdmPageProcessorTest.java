@@ -31,8 +31,6 @@ class SmzdmPageProcessorTest {
     void testLocal() {
         Spider.create(new SmzdmPageProcessor())
                 .test("https://www.smzdm.com/p/52475470/");
-//                .addUrl("https://faxian.smzdm.com/h3s183t0f0c1p1")
-//                .addUrl("https://search.smzdm.com/?c=home&s=%E8%82%AF%E5%BE%B7%E5%9F%BA&v=b")
     }
 
 }

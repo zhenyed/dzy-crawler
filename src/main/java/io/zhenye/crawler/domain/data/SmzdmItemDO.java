@@ -57,9 +57,7 @@ public class SmzdmItemDO extends BaseDO {
 
     public SmzdmItemDO(SmzdmParseDTO dto) {
         LocalDateTime now = LocalDateTime.now();
-        SmzdmItemDO item = new SmzdmItemDO();
-        BeanUtils.copyProperties(dto, item);
-        item.setCreateTime(now);
-        item.setUpdateTime(now);
+        BeanUtils.copyProperties(dto, this);
+        this.setUpdateTime(now);
     }
 }

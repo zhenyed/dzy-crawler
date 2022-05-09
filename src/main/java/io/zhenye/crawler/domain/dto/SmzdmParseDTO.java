@@ -3,6 +3,8 @@ package io.zhenye.crawler.domain.dto;
 import cn.hutool.core.util.NumberUtil;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * "什么值得买" 页面解析 DTO
  */
@@ -48,6 +50,10 @@ public class SmzdmParseDTO {
      * 是否有效
      */
     private Boolean effective;
+    /**
+     * 创建时间（读取 smzdm 页面的值）
+     */
+    private LocalDateTime createTime;
 
     /**
      * 计算"值"比例

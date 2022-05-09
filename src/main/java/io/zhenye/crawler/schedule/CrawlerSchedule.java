@@ -8,6 +8,8 @@ import io.zhenye.crawler.pipeline.RankingPipeLine;
 import io.zhenye.crawler.processor.SmzdmPageProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RAtomicLong;
+import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Spider;
@@ -22,11 +24,12 @@ public class CrawlerSchedule {
     private final DbPipeLine dbPipeLine;
     private final RankingPipeLine rankingPipeLine;
     private final CrawlUrlRepository crawlUrlRepository;
+    private final RedissonClient redissonClient;
 
     /**
      * 【每小时】12h排行榜
      */
-    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void smzdmRankingListSchedule() {
         log.info("[Schedule] smzdmRankingListSchedule start");
 
@@ -47,6 +50,24 @@ public class CrawlerSchedule {
                 .thread(4)
                 .run();
         log.info("[Schedule] smzdmRankingListSchedule end");
+    }
+
+    @Scheduled(cron = "0 30 * * * ?")
+    public void smzdmRankingInitSchedule() {
+        log.info("[Schedule] smzdmRankingInitSchedule start");
+
+        Spider spider = Spider.create(new SmzdmPageProcessor());
+        RAtomicLong init = redissonClient.getAtomicLong("init");
+        long start = init.get();
+        long end = start - 100;
+        for (; start > end; start--) {
+            spider.addUrl("https://www.smzdm.com/p/" + start + "/");
+        }
+        spider.addPipeline(dbPipeLine)
+                .thread(4)
+                .run();
+        init.set(start);
+        log.info("[Schedule] smzdmRankingInitSchedule end");
     }
 
 }

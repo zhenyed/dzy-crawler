@@ -1,6 +1,8 @@
 package io.zhenye.crawler.processor;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.URLUtil;
 import io.zhenye.crawler.domain.dto.SmzdmParseDTO;
@@ -8,9 +10,11 @@ import io.zhenye.crawler.util.JsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,6 +53,15 @@ public class SmzdmPageProcessor extends BasePageProcessor {
                 .map(this::revertLink)
                 .orElse(null);
 
+        String updateTime = doc.select(".J_author_info > .time").text();
+
+        String matchCreateTime = ReUtil.getGroup1("更新时间：(\\d{2}-\\d{2} \\d{2}:\\d{2})", updateTime);
+        if (matchCreateTime != null) {
+            matchCreateTime = LocalDateTime.now().getYear() + "-" + matchCreateTime;
+        } else {
+            matchCreateTime = ReUtil.getGroup1("更新时间：(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2})", updateTime);
+        }
+
         SmzdmParseDTO smzdmParseDTO = new SmzdmParseDTO()
                 .setPageId(Long.parseLong(page.getUrl().regex(SMZDM_PAGE_ID_REG, 1).get()))
                 .setPageUrl(pageUrl)
@@ -58,7 +71,9 @@ public class SmzdmPageProcessor extends BasePageProcessor {
                 .setCoverUrl(doc.select(".main-img").attr("src"))
                 .setWorthy(Integer.parseInt(doc.select("#rating_worthy_num").text()))
                 .setUnworthy(Integer.parseInt(doc.select("#rating_unworthy_num").text()))
-                .setBuyUrl(buyUrl);
+                .setBuyUrl(buyUrl)
+                .setCreateTime(DateUtil.parseLocalDateTime(matchCreateTime, "yyyy-MM-dd HH:mm"))
+                ;
         page.putField("dto", smzdmParseDTO);
     }
 
@@ -77,6 +92,9 @@ public class SmzdmPageProcessor extends BasePageProcessor {
                 return "";
             }
             String newUrl = ReUtil.getGroup1(SMZDM_SKIP_LINK_REG, javaScript);
+            if (StringUtils.isEmpty(newUrl)) {
+                return "";
+            }
             newUrl = newUrl.contains("&to=") ? newUrl.substring(newUrl.indexOf("&to=") + 4) : newUrl;
             return URLUtil.decode(newUrl);
         }

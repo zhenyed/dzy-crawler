@@ -32,16 +32,17 @@ public class DbPipeLine implements Pipeline {
         SmzdmItemDO itemDO = smzdmItemRepository.findByPageId(dto.getPageId());
         if (itemDO == null) {
             smzdmItemRepository.save(new SmzdmItemDO(dto));
-        } else if (isEffective(itemDO)) {
+        } else /*if (isEffective(itemDO))*/ {
             Query query = new Query().addCriteria(Criteria.where("pageId").is(dto.getPageId()));
             Update update = new Update()
                     .set("worthy", dto.getWorthy())
                     .set("unworthy", dto.getUnworthy())
                     .set("worthyPercent", dto.getWorthyPercent())
+                    .set("createTime", dto.getCreateTime())
                     .set("updateTime", now);
             mongoTemplate.updateFirst(query, update, SmzdmItemDO.class);
-        } else {
-            log.info("PageId[{}] is noneffective. Skip it.", itemDO.getPageId());
+//        } else {
+//            log.info("PageId[{}] is noneffective. Skip it.", itemDO.getPageId());
         }
     }
 
