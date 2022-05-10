@@ -64,7 +64,7 @@ public class SmzdmItemController {
                 .collect(Collectors.toList());
         return AdminVO.success(
                 new ListVO<SmzdmItemVO>()
-                        .setTotal(page.getTotalElements())
+                        .setTotal(page.getSize())
                         .setRows(resp));
     }
 

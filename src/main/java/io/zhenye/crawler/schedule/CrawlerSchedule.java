@@ -52,7 +52,7 @@ public class CrawlerSchedule {
         log.info("[Schedule] smzdmRankingListSchedule end");
     }
 
-    @Scheduled(cron = "0 30 * * * ?")
+    @Scheduled(cron = "0 */15 * * * ?")
     public void smzdmRankingInitSchedule() {
         log.info("[Schedule] smzdmRankingInitSchedule start");
 

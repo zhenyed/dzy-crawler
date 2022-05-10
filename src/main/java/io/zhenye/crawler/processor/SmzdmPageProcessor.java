@@ -1,7 +1,6 @@
 package io.zhenye.crawler.processor;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.URLUtil;
@@ -10,11 +9,11 @@ import io.zhenye.crawler.util.JsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,8 +54,10 @@ public class SmzdmPageProcessor extends BasePageProcessor {
 
         String updateTime = doc.select(".J_author_info > .time").text();
 
-        String matchCreateTime = ReUtil.getGroup1("更新时间：(\\d{2}-\\d{2} \\d{2}:\\d{2})", updateTime);
+        String matchCreateTime = ReUtil.getGroup1("更新时间：(\\d{2}:\\d{2})", updateTime);
         if (matchCreateTime != null) {
+            matchCreateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " " + matchCreateTime;
+        } else if ((matchCreateTime = ReUtil.getGroup1("更新时间：(\\d{2}-\\d{2} \\d{2}:\\d{2})", updateTime)) != null) {
             matchCreateTime = LocalDateTime.now().getYear() + "-" + matchCreateTime;
         } else {
             matchCreateTime = ReUtil.getGroup1("更新时间：(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2})", updateTime);
