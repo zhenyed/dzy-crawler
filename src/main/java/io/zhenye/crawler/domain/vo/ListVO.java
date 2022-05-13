@@ -1,4 +1,4 @@
-package io.zhenye.crawler.domain;
+package io.zhenye.crawler.domain.vo;
 
 import lombok.Data;
 

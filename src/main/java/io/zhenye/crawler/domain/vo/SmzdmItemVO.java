@@ -1,9 +1,13 @@
 package io.zhenye.crawler.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.zhenye.crawler.domain.data.SmzdmItemDO;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class SmzdmItemVO {
@@ -57,5 +61,15 @@ public class SmzdmItemVO {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime updateTime;
+
+    public static SmzdmItemVO of(SmzdmItemDO smzdmItemDO) {
+        SmzdmItemVO res = new SmzdmItemVO();
+        BeanUtils.copyProperties(smzdmItemDO, res);
+        return res;
+    }
+
+    public static List<SmzdmItemVO> ofList(List<SmzdmItemDO> list) {
+        return list.stream().map(SmzdmItemVO::of).collect(Collectors.toList());
+    }
 
 }

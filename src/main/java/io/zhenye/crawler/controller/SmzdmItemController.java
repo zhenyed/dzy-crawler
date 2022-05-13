@@ -1,15 +1,16 @@
 package io.zhenye.crawler.controller;
 
-import io.zhenye.crawler.domain.AdminVO;
-import io.zhenye.crawler.domain.ListVO;
+import io.zhenye.crawler.domain.data.DailyCreateCountBO;
+import io.zhenye.crawler.domain.vo.AdminVO;
+import io.zhenye.crawler.domain.vo.ListVO;
 import io.zhenye.crawler.domain.data.SmzdmItemDO;
 import io.zhenye.crawler.domain.dto.PageDTO;
 import io.zhenye.crawler.domain.dto.SmzdmQueryDTO;
+import io.zhenye.crawler.domain.vo.DailyCreateCountVO;
 import io.zhenye.crawler.domain.vo.SmzdmItemVO;
 import io.zhenye.crawler.service.SmzdmItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,13 +31,7 @@ public class SmzdmItemController {
     @GetMapping("/")
     public AdminVO<ListVO<SmzdmItemVO>> list(@Valid SmzdmQueryDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.list(dto);
-        List<SmzdmItemVO> resp = page.stream()
-                .map(i -> {
-                    SmzdmItemVO res = new SmzdmItemVO();
-                    BeanUtils.copyProperties(i, res);
-                    return res;
-                })
-                .collect(Collectors.toList());
+        List<SmzdmItemVO> resp = SmzdmItemVO.ofList(page.toList());
         return AdminVO.success(
                 new ListVO<SmzdmItemVO>()
                         .setTotal(page.getTotalElements())
@@ -47,25 +41,24 @@ public class SmzdmItemController {
     @GetMapping("/{pageId}")
     public AdminVO<SmzdmItemVO> get(@PathVariable("pageId") Long pageId) {
         SmzdmItemDO itemDO = smzdmItemService.get(pageId);
-        SmzdmItemVO res = new SmzdmItemVO();
-        BeanUtils.copyProperties(itemDO, res);
+        SmzdmItemVO res = SmzdmItemVO.of(itemDO);
         return AdminVO.success(res);
     }
 
     @GetMapping("/ranking")
     public AdminVO<ListVO<SmzdmItemVO>> ranking(@Valid PageDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.listRanking(dto);
-        List<SmzdmItemVO> resp = page.stream()
-                .map(i -> {
-                    SmzdmItemVO res = new SmzdmItemVO();
-                    BeanUtils.copyProperties(i, res);
-                    return res;
-                })
-                .collect(Collectors.toList());
+        List<SmzdmItemVO> resp = SmzdmItemVO.ofList(page.toList());
         return AdminVO.success(
                 new ListVO<SmzdmItemVO>()
                         .setTotal(page.getSize())
                         .setRows(resp));
+    }
+
+    @GetMapping("/bi/daily-create")
+    public AdminVO<DailyCreateCountVO> biDailyCreateCount() {
+        List<DailyCreateCountBO> list = smzdmItemService.listCreateCountDaily();
+        return AdminVO.success(new DailyCreateCountVO(list));
     }
 
 }

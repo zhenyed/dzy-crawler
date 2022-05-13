@@ -9,11 +9,11 @@ import javax.validation.constraints.Min;
 public class PageDTO {
 
     @Max(50)
-    @Min(0)
+    @Min(1)
     private int page = 0;
 
     @Max(50)
-    @Min(0)
+    @Min(1)
     private int perPage = 10;
 
 }

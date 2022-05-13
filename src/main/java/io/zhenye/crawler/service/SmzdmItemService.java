@@ -1,5 +1,6 @@
 package io.zhenye.crawler.service;
 
+import io.zhenye.crawler.domain.data.DailyCreateCountBO;
 import io.zhenye.crawler.domain.data.SmzdmItemDO;
 import io.zhenye.crawler.domain.dto.PageDTO;
 import io.zhenye.crawler.domain.dto.SmzdmQueryDTO;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +36,7 @@ public class SmzdmItemService {
                     .skip((long) (dto.getPage()) * dto.getPerPage());
             return new PageImpl<>(mongoTemplate.find(query, SmzdmItemDO.class));
         }
-        PageRequest pageRequest = PageRequest.of(dto.getPage() - 1, dto.getPerPage(), Sort.Direction.DESC, "createTime");
+        PageRequest pageRequest = PageRequest.of(dto.getPage() + 1, dto.getPerPage(), Sort.Direction.DESC, "createTime");
         return smzdmItemRepository.findAll(pageRequest);
     }
 
@@ -50,7 +52,7 @@ public class SmzdmItemService {
                         .and("worthy").gte(20)
                 ).with(Sort.by(Sort.Direction.DESC, "worthy", "worthyPercent"))
                 .limit(dto.getPerPage())
-                .skip((long) dto.getPage() * dto.getPerPage());
+                .skip((long) (dto.getPage() - 1) * dto.getPerPage());
 
         long total = mongoTemplate.count(query, SmzdmItemDO.class);
         if (total == 0) {
@@ -58,5 +60,10 @@ public class SmzdmItemService {
         }
         List<SmzdmItemDO> result = mongoTemplate.find(query, SmzdmItemDO.class);
         return new PageImpl<>(result, Pageable.unpaged(), total);
+    }
+
+    public List<DailyCreateCountBO> listCreateCountDaily() {
+        LocalDate localDate = LocalDate.now().minusDays(5);
+        return smzdmItemRepository.BiByCreateCountDaily(localDate);
     }
 }
