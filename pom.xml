@@ -19,7 +19,8 @@
         <hutool.version>5.7.22</hutool.version>
         <commons-text.version>1.9</commons-text.version>
         <webmagic.version>0.7.5</webmagic.version>
-        <redisson.version>3.12.4</redisson.version>
+        <redisson.version>3.17.0</redisson.version>
+        <xxlJob.version>2.3.0</xxlJob.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -75,6 +76,12 @@
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
             <version>${redisson.version}</version>
+        </dependency>
+        <!-- xxl-job -->
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+            <version>${xxlJob.version}</version>
         </dependency>
     </dependencies>
 
