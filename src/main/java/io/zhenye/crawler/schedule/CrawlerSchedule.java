@@ -14,6 +14,7 @@ import io.zhenye.crawler.processor.SmzdmPageProcessor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
@@ -80,6 +81,19 @@ public class CrawlerSchedule {
                 .thread(4)
                 .run();
         XxlJobHelper.log("[Schedule] smzdmRankingInitSchedule end");
+    }
+
+    @XxlJob("smzdmTempPageSchedule")
+    public void smzdmTempSchedule() {
+        String param = XxlJobHelper.getJobParam();
+        if (StringUtils.isEmpty(param)) {
+            XxlJobHelper.handleFail();
+            return;
+        }
+        Spider.create(new SmzdmPageProcessor())
+                .addUrl("https://www.smzdm.com/p/" + param + "/")
+                .addPipeline(dbPipeLine)
+                .run();
     }
 
 }

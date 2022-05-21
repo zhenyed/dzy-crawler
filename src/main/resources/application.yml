@@ -23,3 +23,5 @@ xxl:
       port: 9999
       log-path: logs/xxl-job
       log-retention-days: 30
+
+host: localhost:8080

@@ -8,6 +8,7 @@ import io.zhenye.crawler.domain.dto.SmzdmQueryDTO;
 import io.zhenye.crawler.service.SmzdmItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,9 @@ public class SmzdmItemController {
 
     private final SmzdmItemService smzdmItemService;
 
+    @Value("${host}")
+    private String host;
+
     @GetMapping("/")
     public AdminVO<ListVO<SmzdmItemVO>> list(@Valid SmzdmQueryDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.list(dto);
@@ -42,6 +46,7 @@ public class SmzdmItemController {
     public AdminVO<SmzdmItemVO> get(@PathVariable("pageId") Long pageId) {
         SmzdmItemDO itemDO = smzdmItemService.get(pageId);
         SmzdmItemVO res = SmzdmItemVO.of(itemDO);
+        res.setCoverUrl("http://" + host + "/grid/smzdm/" + res.getPageId());
         return AdminVO.success(res);
     }
 

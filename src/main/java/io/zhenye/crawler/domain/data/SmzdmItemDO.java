@@ -35,10 +35,6 @@ public class SmzdmItemDO extends BaseDO {
      */
     private String price;
     /**
-     * 封面地址
-     */
-    private String coverUrl;
-    /**
      * 购物链接
      */
     private String buyUrl;
