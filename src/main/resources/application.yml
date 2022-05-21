@@ -19,7 +19,7 @@ xxl:
     admin:
       addresses: http://127.0.0.1:8889/xxl-job
     executor:
-      app-name: dzy-crawler
+      app-name: dzy-crawler-dev
       port: 9999
       log-path: logs/xxl-job
       log-retention-days: 30

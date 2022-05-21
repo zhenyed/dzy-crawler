@@ -1,6 +1,6 @@
 package io.zhenye.crawler.service;
 
-import io.zhenye.crawler.domain.data.DailyCreateCountBO;
+import io.zhenye.crawler.domain.data.GroupByBO;
 import io.zhenye.crawler.domain.data.SmzdmItemDO;
 import io.zhenye.crawler.domain.dto.PageDTO;
 import io.zhenye.crawler.domain.dto.SmzdmQueryDTO;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,8 +63,14 @@ public class SmzdmItemService {
         return new PageImpl<>(result, Pageable.unpaged(), total);
     }
 
-    public List<DailyCreateCountBO> listCreateCountDaily() {
-        LocalDate localDate = LocalDate.now().minusDays(5);
-        return smzdmItemRepository.BiByCreateCountDaily(localDate);
+    public List<GroupByBO> listCreateCountDaily() {
+        LocalDate localDate = LocalDate.now().minusDays(6);
+        return smzdmItemRepository.biByCreateCountDaily(localDate);
+    }
+
+    public List<GroupByBO> listMallCount() {
+        LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime endDate = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+        return smzdmItemRepository.countGroupByMall(startDate, endDate);
     }
 }

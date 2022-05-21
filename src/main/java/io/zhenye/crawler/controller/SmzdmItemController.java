@@ -1,13 +1,10 @@
 package io.zhenye.crawler.controller;
 
-import io.zhenye.crawler.domain.data.DailyCreateCountBO;
-import io.zhenye.crawler.domain.vo.AdminVO;
-import io.zhenye.crawler.domain.vo.ListVO;
+import io.zhenye.crawler.domain.data.GroupByBO;
+import io.zhenye.crawler.domain.vo.*;
 import io.zhenye.crawler.domain.data.SmzdmItemDO;
 import io.zhenye.crawler.domain.dto.PageDTO;
 import io.zhenye.crawler.domain.dto.SmzdmQueryDTO;
-import io.zhenye.crawler.domain.vo.DailyCreateCountVO;
-import io.zhenye.crawler.domain.vo.SmzdmItemVO;
 import io.zhenye.crawler.service.SmzdmItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -57,8 +57,15 @@ public class SmzdmItemController {
 
     @GetMapping("/bi/daily-create")
     public AdminVO<DailyCreateCountVO> biDailyCreateCount() {
-        List<DailyCreateCountBO> list = smzdmItemService.listCreateCountDaily();
+        List<GroupByBO> list = smzdmItemService.listCreateCountDaily();
         return AdminVO.success(new DailyCreateCountVO(list));
+    }
+
+    @GetMapping("/bi/mall-create")
+    public AdminVO<Map<String, List<ChartMallVO>>> biMallCount() {
+        List<GroupByBO> list = smzdmItemService.listMallCount();
+        List<ChartMallVO> res = list.stream().map(ChartMallVO::new).collect(Collectors.toList());
+        return AdminVO.success(Collections.singletonMap("mall", res));
     }
 
 }
