@@ -1,5 +1,6 @@
 package io.zhenye.crawler.controller;
 
+import io.zhenye.crawler.config.GridFsConfig;
 import io.zhenye.crawler.domain.data.GroupByBO;
 import io.zhenye.crawler.domain.vo.*;
 import io.zhenye.crawler.domain.data.SmzdmItemDO;
@@ -28,14 +29,13 @@ import java.util.stream.Collectors;
 public class SmzdmItemController {
 
     private final SmzdmItemService smzdmItemService;
-
-    @Value("${host}")
-    private String host;
+    private final GridFsConfig gridFsConfig;
 
     @GetMapping("/")
     public AdminVO<ListVO<SmzdmItemVO>> list(@Valid SmzdmQueryDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.list(dto);
         List<SmzdmItemVO> resp = SmzdmItemVO.ofList(page.toList());
+        resp.forEach(i -> i.setCoverUrl("http://" + gridFsConfig.getHost() + "/grid/smzdm/" + i.getPageId()));
         return AdminVO.success(
                 new ListVO<SmzdmItemVO>()
                         .setTotal(page.getTotalElements())
@@ -46,7 +46,7 @@ public class SmzdmItemController {
     public AdminVO<SmzdmItemVO> get(@PathVariable("pageId") Long pageId) {
         SmzdmItemDO itemDO = smzdmItemService.get(pageId);
         SmzdmItemVO res = SmzdmItemVO.of(itemDO);
-        res.setCoverUrl("http://" + host + "/grid/smzdm/" + res.getPageId());
+        res.setCoverUrl("http://" + gridFsConfig.getHost() + "/grid/smzdm/" + res.getPageId());
         return AdminVO.success(res);
     }
 
@@ -54,6 +54,7 @@ public class SmzdmItemController {
     public AdminVO<ListVO<SmzdmItemVO>> ranking(@Valid PageDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.listRanking(dto);
         List<SmzdmItemVO> resp = SmzdmItemVO.ofList(page.toList());
+        resp.forEach(i -> i.setCoverUrl("http://" + gridFsConfig.getHost() + "/grid/smzdm/" + i.getPageId()));
         return AdminVO.success(
                 new ListVO<SmzdmItemVO>()
                         .setTotal(page.getSize())
