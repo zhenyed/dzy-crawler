@@ -1,4 +1,4 @@
-package io.zhenye.crawler.processor;
+package io.zhenye.crawler.webmagic.processor;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;

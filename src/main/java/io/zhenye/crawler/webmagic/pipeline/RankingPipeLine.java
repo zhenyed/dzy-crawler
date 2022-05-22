@@ -1,4 +1,4 @@
-package io.zhenye.crawler.pipeline;
+package io.zhenye.crawler.webmagic.pipeline;
 
 import io.zhenye.crawler.constant.SmzdmConstant;
 import io.zhenye.crawler.constant.SmzdmProperties;

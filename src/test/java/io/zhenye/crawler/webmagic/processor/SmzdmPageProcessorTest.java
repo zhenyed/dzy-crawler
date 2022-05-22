@@ -1,4 +1,4 @@
-package io.zhenye.crawler.processor;
+package io.zhenye.crawler.webmagic.processor;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;

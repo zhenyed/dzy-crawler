@@ -1,4 +1,4 @@
-package io.zhenye.crawler.processor;
+package io.zhenye.crawler.webmagic.processor;
 
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;

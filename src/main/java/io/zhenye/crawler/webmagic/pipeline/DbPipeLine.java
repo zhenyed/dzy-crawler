@@ -1,4 +1,4 @@
-package io.zhenye.crawler.pipeline;
+package io.zhenye.crawler.webmagic.pipeline;
 
 import io.zhenye.crawler.dao.SmzdmItemRepository;
 import io.zhenye.crawler.domain.dto.SmzdmParseDTO;
