@@ -12,7 +12,7 @@ public class PageDTO {
     @Min(1)
     private int page = 0;
 
-    @Max(50)
+    @Max(500)
     @Min(1)
     private int perPage = 10;
 

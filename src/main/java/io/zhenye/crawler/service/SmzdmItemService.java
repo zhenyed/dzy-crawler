@@ -2,9 +2,9 @@ package io.zhenye.crawler.service;
 
 import io.zhenye.crawler.domain.data.GroupByBO;
 import io.zhenye.crawler.domain.data.SmzdmItemDO;
-import io.zhenye.crawler.domain.dto.PageDTO;
 import io.zhenye.crawler.domain.dto.SmzdmQueryDTO;
 import io.zhenye.crawler.dao.SmzdmItemRepository;
+import io.zhenye.crawler.domain.dto.SmzdmRankingDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -45,22 +44,18 @@ public class SmzdmItemService {
         return smzdmItemRepository.findByPageId(pageId);
     }
 
-    public Page<SmzdmItemDO> listRanking(PageDTO dto) {
+    public Page<SmzdmItemDO> listRanking(SmzdmRankingDTO dto) {
         Query query = Query
                 .query(new Criteria()
-                        .and("createTime").gte(LocalDateTime.now().minusDays(1))
-                        .and("worthyPercent").gte(70)
-                        .and("worthy").gte(20)
+                        .and("createTime").gte(LocalDateTime.now().minusHours(dto.getHourBefore()))
+                        .and("worthyPercent").gte(dto.getWorthyPercent())
+                        .and("worthy").gte(dto.getWorth())
                 ).with(Sort.by(Sort.Direction.DESC, "worthy", "worthyPercent"))
                 .limit(dto.getPerPage())
                 .skip((long) (dto.getPage() - 1) * dto.getPerPage());
 
-        long total = mongoTemplate.count(query, SmzdmItemDO.class);
-        if (total == 0) {
-            return new PageImpl<>(Collections.emptyList());
-        }
         List<SmzdmItemDO> result = mongoTemplate.find(query, SmzdmItemDO.class);
-        return new PageImpl<>(result, Pageable.unpaged(), total);
+        return new PageImpl<>(result, Pageable.unpaged(), result.size());
     }
 
     public List<GroupByBO> listCreateCountDaily() {

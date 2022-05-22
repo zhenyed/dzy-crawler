@@ -2,6 +2,7 @@ package io.zhenye.crawler.controller;
 
 import io.zhenye.crawler.config.GridFsConfig;
 import io.zhenye.crawler.domain.data.GroupByBO;
+import io.zhenye.crawler.domain.dto.SmzdmRankingDTO;
 import io.zhenye.crawler.domain.vo.*;
 import io.zhenye.crawler.domain.data.SmzdmItemDO;
 import io.zhenye.crawler.domain.dto.PageDTO;
@@ -9,7 +10,6 @@ import io.zhenye.crawler.domain.dto.SmzdmQueryDTO;
 import io.zhenye.crawler.service.SmzdmItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,13 +51,13 @@ public class SmzdmItemController {
     }
 
     @GetMapping("/ranking")
-    public AdminVO<ListVO<SmzdmItemVO>> ranking(@Valid PageDTO dto) {
+    public AdminVO<ListVO<SmzdmItemVO>> ranking(@Valid SmzdmRankingDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.listRanking(dto);
         List<SmzdmItemVO> resp = SmzdmItemVO.ofList(page.toList());
         resp.forEach(i -> i.setCoverUrl("http://" + gridFsConfig.getHost() + "/grid/smzdm/" + i.getPageId()));
         return AdminVO.success(
                 new ListVO<SmzdmItemVO>()
-                        .setTotal(page.getSize())
+                        .setTotal(page.getTotalElements())
                         .setRows(resp));
     }
 
