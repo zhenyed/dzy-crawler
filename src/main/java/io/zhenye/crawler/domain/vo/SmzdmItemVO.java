@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Data
@@ -69,7 +70,7 @@ public class SmzdmItemVO {
     }
 
     public static List<SmzdmItemVO> ofList(List<SmzdmItemDO> list) {
-        return list.stream().map(SmzdmItemVO::of).collect(Collectors.toList());
+        return list.stream().filter(Objects::nonNull).map(SmzdmItemVO::of).collect(Collectors.toList());
     }
 
 }
