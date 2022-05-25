@@ -36,21 +36,23 @@ public class DbPipeLine implements Pipeline {
         gridFsService.uploadSmzdmPic(dto.getCoverUrl(), dto.getPageId());
         if (itemDO == null) {
             smzdmItemRepository.save(new SmzdmItemDO(dto));
-        } else /*if (isEffective(itemDO))*/ {
+        } else if (needUpdate(itemDO)) {
             Query query = new Query().addCriteria(Criteria.where("pageId").is(dto.getPageId()));
             Update update = new Update()
                     .set("worthy", dto.getWorthy())
                     .set("unworthy", dto.getUnworthy())
                     .set("worthyPercent", dto.getWorthyPercent())
-                    .set("createTime", dto.getCreateTime())
                     .set("updateTime", now);
             mongoTemplate.updateFirst(query, update, SmzdmItemDO.class);
-//        } else {
-//            log.info("PageId[{}] is noneffective. Skip it.", itemDO.getPageId());
+        } else {
+            log.info("PageId[{}] is noneffective. Skip it.", itemDO.getPageId());
         }
     }
 
-    private boolean isEffective(SmzdmItemDO itemDO) {
-        return itemDO.getCreateTime().isAfter(LocalDateTime.now().minusDays(1));
+    /**
+     * 7天内的才更新
+     */
+    private boolean needUpdate(SmzdmItemDO itemDO) {
+        return itemDO.getCreateTime().isAfter(LocalDateTime.now().minusDays(7));
     }
 }
