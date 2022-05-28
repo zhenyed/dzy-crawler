@@ -31,7 +31,10 @@ public class SmzdmRankManager {
                 .map(SmzdmRankVO::getData)
                 .map(SmzdmRankVO.Result::getList)
                 .orElse(Collections.emptyList());
-        return lists.stream().flatMap(Collection::stream).map(SmzdmRankVO.Item::getArticle_url).collect(Collectors.toSet());
+        return lists.stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .map(SmzdmRankVO.Item::getArticle_url).collect(Collectors.toSet());
     }
 
 }
