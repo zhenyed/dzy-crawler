@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        .main-left {
+            padding: 30px;
+            width: 742px;
+            float: left;
+            background: #fff
+        }
+        .info .img-box {
+            width: 230px;
+            height: 230px;
+            display: block;
+            float: left;
+            border: 1px solid #f5f5f5;
+            position: relative;
+            margin-right: 30px;
+            text-align: center
+        }
+        .info .info-right {
+            float: right;
+            width: 422px;
+            position: relative
+        }
+        .info .info-right .title {
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 30px;
+            word-break: normal
+        }
+        .info .info-right .price {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            font-size: 16px;
+            color: #e62828;
+            margin-top: 10px
+        }
+        .info .info-right .structuration-box {
+            position: relative;
+            background-color: #f9f9f9;
+            padding: 14px 20px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            margin-top: 20px;
+            border-radius: 2px
+        }
+        .info .info-right .structuration-box .canal,
+        .info .info-right .structuration-box .preferential {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            font-size: 12px;
+            -webkit-box-align: start;
+            -ms-flex-align: start;
+            align-items: flex-start;
+            line-height: 24px;
+            margin-bottom: 5px
+        }
+        .info .info-right .structuration-box .canal .item-title,
+        .info .info-right .structuration-box .preferential .item-title {
+            color: #999;
+            margin-right: 20px
+        }
+        .info .info-right .structuration-box .canal .item-subtitle,
+        .info .info-right .structuration-box .preferential .item-subtitle {
+            color: #333;
+            line-height: 20px;
+            -webkit-box-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+            position: relative;
+            top: 2px
+        }
+        .info .info-right .structuration-box .canal .item-subtitle .featrue {
+            height: 20px;
+            padding: 2px 4px;
+            font-size: 12px;
+            line-height: 16px;
+            color: #e62828;
+            border-radius: 2px;
+            border: 1px solid #e62828;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            display: inline-block
+        }
+        .info .btn-group .btn {
+            font-size: 14px;
+            margin-right: 14px;
+            display: inline-block;
+            border-radius: 2px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            height: 28px;
+            line-height: 28px
+        }
+        .info .btn-group .go-buy {
+            background: #e62828;
+            width: 102px
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="main-left">
+    <!--好价主要信息-->
+    <div class="info J_info">
+        <a class="img-box">
+            <img class="main-img" src="{{coverUrl}}">
+        </a>
+        <div class="info-right ">
+            <div class="title-box">
+                <a href="{{pageUrl}}">
+                    <h1 class="title J_title">{{title}}</h1>
+                </a>
+                <!--正常文章价格模块-->
+                <div class="price">
+                    <span>
+                        <div class="over-container">
+                            <span class="price-large">
+                                <span class="num">{{price}}</span>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+            </div>
+            <div class="info-details">
+                <!-- 结构化 -->
+                <div class="structuration-box">
+                    <div class="canal">
+                        <div class="item-title">购买渠道</div>
+                        <div class="item-subtitle">
+                            <span>{{mallName}}</span>
+                            <span class="featrue">值得率 {{worthyPercent}}% 【{{worthy}} : {{unworthy}}】</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 购买链接 -->
+                <div class="btn-group J_btn_group">
+                    <a href="{{buyUrl}}"
+                       class="go-buy btn">去购买</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

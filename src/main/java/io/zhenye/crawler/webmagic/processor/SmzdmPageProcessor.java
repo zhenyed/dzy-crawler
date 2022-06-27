@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static io.zhenye.crawler.constant.RegexConstant.*;
+import static io.zhenye.crawler.constant.StrConstant.*;
 
 @Slf4j
 public class SmzdmPageProcessor extends BasePageProcessor {

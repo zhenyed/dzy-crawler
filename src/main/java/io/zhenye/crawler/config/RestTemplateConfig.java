@@ -1,4 +1,4 @@
-package io.zhenye.crawler;
+package io.zhenye.crawler.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

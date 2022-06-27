@@ -1,5 +1,6 @@
 package io.zhenye.crawler.service;
 
+import io.zhenye.crawler.config.GridFsConfig;
 import io.zhenye.crawler.util.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.io.OutputStream;
 public class GridFsService {
 
     private final GridFsTemplate gridFsTemplate;
+    private final GridFsConfig gridFsConfig;
 
     /**
      * 上传 smzdm 照片
@@ -65,6 +67,13 @@ public class GridFsService {
         } catch (IOException e) {
             log.error("[GridFS] get error", e);
         }
+    }
+
+    /**
+     * 获取图片 url
+     */
+    public String getUrl(Long pageId) {
+        return  "http://" + gridFsConfig.getHost() + "/grid/smzdm/" + pageId;
     }
 
     /**

@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import java.util.regex.Pattern;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RegexConstant {
+public class StrConstant {
+    public static final String SMZDM_PAGE_PREFIX = "https://www.smzdm.com/p/";
     /**
      * “什么值得买” 爆料路径
      */

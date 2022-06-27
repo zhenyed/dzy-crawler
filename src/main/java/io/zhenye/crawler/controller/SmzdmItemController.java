@@ -1,12 +1,11 @@
 package io.zhenye.crawler.controller;
 
-import io.zhenye.crawler.config.GridFsConfig;
 import io.zhenye.crawler.domain.data.GroupByBO;
 import io.zhenye.crawler.domain.dto.SmzdmRankingDTO;
 import io.zhenye.crawler.domain.vo.*;
 import io.zhenye.crawler.domain.data.SmzdmItemDO;
-import io.zhenye.crawler.domain.dto.PageDTO;
 import io.zhenye.crawler.domain.dto.SmzdmQueryDTO;
+import io.zhenye.crawler.service.GridFsService;
 import io.zhenye.crawler.service.SmzdmItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +28,13 @@ import java.util.stream.Collectors;
 public class SmzdmItemController {
 
     private final SmzdmItemService smzdmItemService;
-    private final GridFsConfig gridFsConfig;
+    private final GridFsService gridFsService;
 
     @GetMapping("/")
     public AdminVO<ListVO<SmzdmItemVO>> list(@Valid SmzdmQueryDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.list(dto);
         List<SmzdmItemVO> resp = SmzdmItemVO.ofList(page.toList());
-        resp.forEach(i -> i.setCoverUrl("http://" + gridFsConfig.getHost() + "/grid/smzdm/" + i.getPageId()));
+        resp.forEach(i -> i.setCoverUrl(gridFsService.getUrl(i.getPageId())));
         return AdminVO.success(
                 new ListVO<SmzdmItemVO>()
                         .setTotal(page.getTotalElements())
@@ -46,7 +45,7 @@ public class SmzdmItemController {
     public AdminVO<SmzdmItemVO> get(@PathVariable("pageId") Long pageId) {
         SmzdmItemDO itemDO = smzdmItemService.get(pageId);
         SmzdmItemVO res = SmzdmItemVO.of(itemDO);
-        res.setCoverUrl("http://" + gridFsConfig.getHost() + "/grid/smzdm/" + res.getPageId());
+        res.setCoverUrl(gridFsService.getUrl(res.getPageId()));
         return AdminVO.success(res);
     }
 
@@ -54,7 +53,7 @@ public class SmzdmItemController {
     public AdminVO<ListVO<SmzdmItemVO>> ranking(@Valid SmzdmRankingDTO dto) {
         Page<SmzdmItemDO> page = smzdmItemService.listRanking(dto);
         List<SmzdmItemVO> resp = SmzdmItemVO.ofList(page.toList());
-        resp.forEach(i -> i.setCoverUrl("http://" + gridFsConfig.getHost() + "/grid/smzdm/" + i.getPageId()));
+        resp.forEach(i -> i.setCoverUrl(gridFsService.getUrl(i.getPageId())));
         return AdminVO.success(
                 new ListVO<SmzdmItemVO>()
                         .setTotal(page.getTotalElements())

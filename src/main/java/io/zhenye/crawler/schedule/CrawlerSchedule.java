@@ -1,7 +1,9 @@
 package io.zhenye.crawler.schedule;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.mail.MailUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -11,7 +13,9 @@ import io.zhenye.crawler.dao.CrawlApiRepository;
 import io.zhenye.crawler.dao.CrawlUrlRepository;
 import io.zhenye.crawler.domain.data.CrawlApiDO;
 import io.zhenye.crawler.domain.data.CrawlUrlDO;
+import io.zhenye.crawler.domain.data.SmzdmItemDO;
 import io.zhenye.crawler.manager.smzdm.SmzdmRankManager;
+import io.zhenye.crawler.service.GridFsService;
 import io.zhenye.crawler.webmagic.pipeline.DbPipeLine;
 import io.zhenye.crawler.webmagic.processor.SmzdmPageProcessor;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +25,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Sets;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Spider;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static io.zhenye.crawler.constant.StrConstant.SMZDM_PAGE_PREFIX;
 
 @RequiredArgsConstructor
 @Component
@@ -38,6 +50,12 @@ public class CrawlerSchedule {
     private final CrawlApiRepository crawlApiRepository;
     private final SmzdmRankManager smzdmRankManager;
     private final RedissonClient redissonClient;
+    private final MongoTemplate mongoTemplate;
+    private final GridFsService gridFsService;
+
+    @Value("${email}")
+    private String receive;
+
 
     /**
      * 抓取指定列表页
@@ -78,14 +96,14 @@ public class CrawlerSchedule {
         Spider spider = Spider.create(new SmzdmPageProcessor());
         if (CollectionUtils.isNotEmpty(array)) {
             for (Object pageId : array) {
-                spider.addUrl("https://www.smzdm.com/p/" + pageId + "/");
+                spider.addUrl(SMZDM_PAGE_PREFIX + pageId + "/");
             }
         } else {
             RAtomicLong init = redissonClient.getAtomicLong("init");
             long start = init.get();
             long end = start - perSize;
             for (; start > end; start--) {
-                spider.addUrl("https://www.smzdm.com/p/" + start + "/");
+                spider.addUrl(SMZDM_PAGE_PREFIX + start + "/");
             }
             init.set(start);
         }
@@ -106,7 +124,7 @@ public class CrawlerSchedule {
             return;
         }
         Spider.create(new SmzdmPageProcessor())
-                .addUrl("https://www.smzdm.com/p/" + param + "/")
+                .addUrl(SMZDM_PAGE_PREFIX + param + "/")
                 .addPipeline(dbPipeLine)
                 .run();
     }
@@ -132,6 +150,52 @@ public class CrawlerSchedule {
         }
         spider.addPipeline(dbPipeLine)
                 .run();
+    }
+
+    /**
+     * 发邮件：最近 x 小时的前 y 条爆料
+     */
+    @XxlJob("smzdmTopEmailSchedule")
+    public void smzdmTopEmailSchedule() {
+        // 参数
+        String param = ObjectUtil.defaultIfEmpty(XxlJobHelper.getJobParam(), "{}");
+        JSONObject object = JSON.parseObject(param);
+        Integer topHours = object.getInteger("topHour");
+        Integer topItem = object.getInteger("topItem");
+        Integer moreThanWorthyPercent = object.getInteger("moreThanWorthyPercent");
+        Integer moreThanWorthy = object.getInteger("moreThanWorthy");
+        if (ObjectUtils.anyNull(topHours, topItem, moreThanWorthyPercent, moreThanWorthy)) {
+            XxlJobHelper.handleFail("参数不能出现 null");
+            return;
+        }
+
+        // 查询
+        Query query = Query
+                .query(new Criteria()
+                        .and("createTime").gte(LocalDateTime.now().minusHours(topHours))
+                        .and("worthyPercent").gte(moreThanWorthyPercent)
+                        .and("worthy").gte(moreThanWorthy)
+                ).with(Sort.by(Sort.Direction.DESC, "worthy", "worthyPercent"))
+                .limit(topItem);
+        List<SmzdmItemDO> result = mongoTemplate.find(query, SmzdmItemDO.class);
+
+        // 发邮件
+        FileReader fileReader = new FileReader("classpath:smzdm.html");
+        StringBuilder sb = new StringBuilder();
+        for (SmzdmItemDO smzdmItemDO : result) {
+            String subContent = fileReader.readString();
+            subContent = subContent.replace("{{coverUrl}}", gridFsService.getUrl(smzdmItemDO.getPageId()));
+            subContent = subContent.replace("{{title}}", smzdmItemDO.getTitle());
+            subContent = subContent.replace("{{pageUrl}}", smzdmItemDO.getPageUrl());
+            subContent = subContent.replace("{{price}}", smzdmItemDO.getPrice());
+            subContent = subContent.replace("{{mallName}}", smzdmItemDO.getMallName());
+            subContent = subContent.replace("{{worthyPercent}}", String.valueOf(smzdmItemDO.getWorthyPercent()));
+            subContent = subContent.replace("{{buyUrl}}", smzdmItemDO.getBuyUrl());
+            subContent = subContent.replace("{{worthy}}", String.valueOf(smzdmItemDO.getWorthy()));
+            subContent = subContent.replace("{{unworthy}}", String.valueOf(smzdmItemDO.getUnworthy()));
+            sb.append(subContent);
+        }
+        MailUtil.send(receive, "什么值得买 - 促销", sb.toString(), true);
     }
 
 }
