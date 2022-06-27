@@ -25,5 +25,8 @@ xxl:
       log-retention-days: 30
 
 host: localhost:8080
-email: xxx@qq.com
-htmlPath: smzdm.html
+
+email:
+  receive: xxx@qq.com
+  htmlPath: smzdm.html
+  settingPath: mail.setting

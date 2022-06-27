@@ -3,6 +3,7 @@ package io.zhenye.crawler.schedule;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -53,10 +54,12 @@ public class CrawlerSchedule {
     private final MongoTemplate mongoTemplate;
     private final GridFsService gridFsService;
 
-    @Value("${email}")
+    @Value("${email.receive}")
     private String receive;
-    @Value("${htmlPath}")
+    @Value("${email.htmlPath}")
     private String htmlPath;
+    @Value("${email.settingPath}")
+    private String settingPath;
 
     /**
      * 抓取指定列表页
@@ -196,7 +199,7 @@ public class CrawlerSchedule {
             subContent = subContent.replace("{{unworthy}}", String.valueOf(smzdmItemDO.getUnworthy()));
             sb.append(subContent);
         }
-        MailUtil.send(receive, "什么值得买 - 促销", sb.toString(), true);
+        MailUtil.send(new MailAccount(settingPath), receive, "什么值得买 - 促销", sb.toString(), true);
     }
 
 }
