@@ -55,7 +55,8 @@ public class CrawlerSchedule {
 
     @Value("${email}")
     private String receive;
-
+    @Value("${htmlPath}")
+    private String htmlPath;
 
     /**
      * 抓取指定列表页
@@ -180,10 +181,10 @@ public class CrawlerSchedule {
         List<SmzdmItemDO> result = mongoTemplate.find(query, SmzdmItemDO.class);
 
         // 发邮件
-        FileReader fileReader = new FileReader("classpath:smzdm.html");
+        final String templateHtml = new FileReader(htmlPath).readString();
         StringBuilder sb = new StringBuilder();
         for (SmzdmItemDO smzdmItemDO : result) {
-            String subContent = fileReader.readString();
+            String subContent = templateHtml;
             subContent = subContent.replace("{{coverUrl}}", gridFsService.getUrl(smzdmItemDO.getPageId()));
             subContent = subContent.replace("{{title}}", smzdmItemDO.getTitle());
             subContent = subContent.replace("{{pageUrl}}", smzdmItemDO.getPageUrl());
