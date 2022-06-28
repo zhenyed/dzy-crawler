@@ -194,7 +194,9 @@ public class CrawlerSchedule {
             subContent = subContent.replace("{{price}}", smzdmItemDO.getPrice());
             subContent = subContent.replace("{{mallName}}", smzdmItemDO.getMallName());
             subContent = subContent.replace("{{worthyPercent}}", String.valueOf(smzdmItemDO.getWorthyPercent()));
-            subContent = subContent.replace("{{buyUrl}}", smzdmItemDO.getBuyUrl());
+            if (StringUtils.isNotEmpty(smzdmItemDO.getBuyUrl())) {
+                subContent = subContent.replace("{{buyUrl}}", smzdmItemDO.getBuyUrl());
+            }
             subContent = subContent.replace("{{worthy}}", String.valueOf(smzdmItemDO.getWorthy()));
             subContent = subContent.replace("{{unworthy}}", String.valueOf(smzdmItemDO.getUnworthy()));
             sb.append(subContent);
