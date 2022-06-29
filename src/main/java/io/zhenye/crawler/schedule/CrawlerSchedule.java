@@ -79,7 +79,7 @@ public class CrawlerSchedule {
             }
         }
         spider.addPipeline(dbPipeLine)
-                .thread(4)
+                .thread(8)
                 .run();
         XxlJobHelper.log("[Schedule] smzdmListSchedule end");
     }
@@ -112,7 +112,7 @@ public class CrawlerSchedule {
             init.set(start);
         }
         spider.addPipeline(dbPipeLine)
-                .thread(4)
+                .thread(8)
                 .run();
         XxlJobHelper.log("[Schedule] smzdmListSchedule end");
     }
@@ -153,6 +153,7 @@ public class CrawlerSchedule {
             spider.addUrl(pageUrl);
         }
         spider.addPipeline(dbPipeLine)
+                .thread(8)
                 .run();
     }
 
