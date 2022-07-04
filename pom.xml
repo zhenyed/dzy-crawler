@@ -16,14 +16,15 @@
 
     <properties>
         <java.version>8</java.version>
-        <hutool.version>5.7.22</hutool.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <hutool.version>5.8.3</hutool.version>
         <commons-text.version>1.9</commons-text.version>
         <webmagic.version>0.7.5</webmagic.version>
         <redisson.version>3.17.0</redisson.version>
         <xxlJob.version>2.3.1</xxlJob.version>
         <mail.version>1.6.2</mail.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
@@ -48,6 +49,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <!-- lombok -->
         <dependency>
@@ -88,6 +93,11 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
+        </dependency>
+        <!-- 监控 -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
     </dependencies>
 
