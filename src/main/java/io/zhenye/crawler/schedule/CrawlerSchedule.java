@@ -1,6 +1,7 @@
 package io.zhenye.crawler.schedule;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.mail.MailAccount;
@@ -183,6 +184,11 @@ public class CrawlerSchedule {
                 ).with(Sort.by(Sort.Direction.DESC, "worthy", "worthyPercent"))
                 .limit(topItem);
         List<SmzdmItemDO> result = mongoTemplate.find(query, SmzdmItemDO.class);
+
+        if (CollUtil.isNotEmpty(result)) {
+            XxlJobHelper.log("缺少最新数据，本次停止发邮件");
+            return;
+        }
 
         // 发邮件
         final String templateHtml = new FileReader(htmlPath).readString();
