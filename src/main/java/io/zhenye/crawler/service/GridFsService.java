@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -70,10 +73,22 @@ public class GridFsService {
     }
 
     /**
-     * 获取图片 url
+     * 获取 url
      */
     public String getUrl(Long pageId) {
         return  "http://" + gridFsConfig.getHost() + "/grid/smzdm/" + pageId;
+    }
+
+    /**
+     * 删除 n 天之前的 GridFs
+     */
+    public void deleteFromAFewDaysAgo(int day, int limit) {
+        Query query = Query
+                .query(new Criteria()
+                        .and("uploadDate").lte(LocalDateTime.now().minusDays(day))
+                )
+                .limit(limit);
+        gridFsTemplate.delete(query);
     }
 
     /**

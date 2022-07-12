@@ -1,7 +1,6 @@
 package io.zhenye.crawler.schedule;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.mail.MailAccount;
@@ -209,6 +208,24 @@ public class CrawlerSchedule {
             sb.append(subContent);
         }
         MailUtil.send(new MailAccount(settingPath), receive, "什么值得买 - 促销", sb.toString(), true);
+    }
+
+    /**
+     * 删除 n 天之前的 GridFs
+     */
+    @XxlJob("deleteGridFsFromAFewDaysAgo")
+    public void deleteGridFsFromAFewDaysAgo() {
+        // 参数
+        String param = ObjectUtil.defaultIfEmpty(XxlJobHelper.getJobParam(), "{}");
+        JSONObject object = JSON.parseObject(param);
+        Integer aFewDaysAgo = object.getInteger("aFewDaysAgo");
+        Integer limit = object.getInteger("limit");
+        if (ObjectUtils.anyNull(aFewDaysAgo, limit)) {
+            XxlJobHelper.handleFail("参数不能出现 null");
+            return;
+        }
+
+        gridFsService.deleteFromAFewDaysAgo(aFewDaysAgo, limit);
     }
 
 }
