@@ -184,7 +184,7 @@ public class CrawlerSchedule {
                 .limit(topItem);
         List<SmzdmItemDO> result = mongoTemplate.find(query, SmzdmItemDO.class);
 
-        if (CollUtil.isNotEmpty(result)) {
+        if (CollUtil.isEmpty(result)) {
             XxlJobHelper.log("缺少最新数据，本次停止发邮件");
             return;
         }
