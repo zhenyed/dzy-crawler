@@ -14,4 +14,7 @@ public class SmzdmProperties {
     @Value("${smzdm.ranking.size}")
     private int rankingSize;
 
+    @Value("${smzdm.spider.threadCount}")
+    private int threadCount;
+
 }

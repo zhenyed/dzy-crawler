@@ -13,6 +13,8 @@ logging:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 
 smzdm:
+  spider:
+    threadCount: 2
   ranking:
     size: 50
 

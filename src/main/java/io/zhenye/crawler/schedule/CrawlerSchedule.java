@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
+import io.zhenye.crawler.constant.SmzdmProperties;
 import io.zhenye.crawler.dao.CrawlApiRepository;
 import io.zhenye.crawler.dao.CrawlUrlRepository;
 import io.zhenye.crawler.domain.data.CrawlApiDO;
@@ -53,6 +54,7 @@ public class CrawlerSchedule {
     private final RedissonClient redissonClient;
     private final MongoTemplate mongoTemplate;
     private final GridFsService gridFsService;
+    private final SmzdmProperties smzdmProperties;
 
     @Value("${email.receive}")
     private String receive;
@@ -79,7 +81,7 @@ public class CrawlerSchedule {
             }
         }
         spider.addPipeline(dbPipeLine)
-                .thread(8)
+                .thread(smzdmProperties.getThreadCount())
                 .run();
         XxlJobHelper.log("[Schedule] smzdmListSchedule end");
     }
@@ -112,7 +114,7 @@ public class CrawlerSchedule {
             init.set(start);
         }
         spider.addPipeline(dbPipeLine)
-                .thread(8)
+                .thread(smzdmProperties.getThreadCount())
                 .run();
         XxlJobHelper.log("[Schedule] smzdmListSchedule end");
     }
@@ -153,7 +155,7 @@ public class CrawlerSchedule {
             spider.addUrl(pageUrl);
         }
         spider.addPipeline(dbPipeLine)
-                .thread(8)
+                .thread(smzdmProperties.getThreadCount())
                 .run();
     }
 
