@@ -4,8 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.script.ScriptUtil;
 import io.zhenye.crawler.domain.dto.SmzdmParseDTO;
-import io.zhenye.crawler.util.JsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
@@ -88,7 +88,7 @@ public class SmzdmPageProcessor extends BasePageProcessor {
         int endIndex = html.indexOf("</script>");
         if (beginIndex >= 4 && endIndex > -1 && beginIndex < endIndex) {
             String javaScript = html.substring(beginIndex, endIndex);
-            javaScript = JsUtils.eval(javaScript);
+            javaScript = (String) ScriptUtil.eval(javaScript);
             if (StringUtils.isEmpty(javaScript)) {
                 return "";
             }

@@ -1,7 +1,7 @@
 package io.zhenye.crawler.service;
 
+import cn.hutool.core.util.URLUtil;
 import io.zhenye.crawler.config.GridFsConfig;
-import io.zhenye.crawler.util.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -46,7 +46,7 @@ public class GridFsService {
         }
         String name = getFileName(module, id);
         if (!this.exists(name)) {
-            try (InputStream inputStream = FileUtils.url2InputStream(url)) {
+            try (InputStream inputStream = URLUtil.getStream(URLUtil.url(url))) {
                 gridFsTemplate.store(inputStream, name);
                 log.info("[GridFS] upload success.[url={}, module={}, id={}]", url, module, id);
             } catch (Exception e) {
