@@ -74,15 +74,16 @@ public class CrawlerSchedule {
             return;
         }
 
-        Spider spider = Spider.create(new SmzdmPageProcessor());
         for (CrawlUrlDO urlDO : crawlUrlSet) {
             for (String url : urlDO.getUrl()) {
-                spider.addUrl(url);
+                Spider.create(new SmzdmPageProcessor())
+                        .addUrl(url)
+                        .addPipeline(dbPipeLine)
+                        .thread(smzdmProperties.getThreadCount())
+                        .run();
             }
         }
-        spider.addPipeline(dbPipeLine)
-                .thread(smzdmProperties.getThreadCount())
-                .run();
+
         XxlJobHelper.log("[Schedule] smzdmListSchedule end");
     }
 
