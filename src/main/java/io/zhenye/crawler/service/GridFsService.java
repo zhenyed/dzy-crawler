@@ -53,7 +53,9 @@ public class GridFsService {
                 log.error("[GridFS] upload error", e);
             }
         } else {
-            log.info("[GridFS] upload exist.[url={}, module={}, id={}]", url, module, id);
+            if (log.isDebugEnabled()) {
+                log.info("[GridFS] upload exist.[url={}, module={}, id={}]", url, module, id);
+            }
         }
     }
 

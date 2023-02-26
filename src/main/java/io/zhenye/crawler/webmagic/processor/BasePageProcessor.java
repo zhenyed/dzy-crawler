@@ -10,7 +10,7 @@ public abstract class BasePageProcessor implements PageProcessor {
     @Override
     public Site getSite() {
         return Site.me()
-                .setRetryTimes(2)
+                .setUseGzip(true)
                 .setSleepTime(1_000)
                 .setTimeOut(30_000)
                 .setUserAgent(UA);
